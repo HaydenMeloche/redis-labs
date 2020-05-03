@@ -59,10 +59,6 @@ public class SiteGeoDaoRedisImpl implements SiteGeoDao {
 
     // Challenge #5
     private Set<Site> findSitesByGeoWithCapacity(GeoQuery query) {
-        return Collections.emptySet();
-    }
-    /* UNCOMMENT this method for Challenge #5
-    private Set<Site> findSitesByGeoWithCapacity(GeoQuery query) {
         Set<Site> results = new HashSet<>();
         Coordinate coord = query.getCoordinate();
         Double radius = query.getRadius();
@@ -72,6 +68,8 @@ public class SiteGeoDaoRedisImpl implements SiteGeoDao {
              // START Challenge #5
 
              // TODO Get the sites matching the geo query.
+             final List<GeoRadiusResponse> radiusResponses =
+                     jedis.georadius(RedisSchema.getSiteGeoKey(), coord.getLng(), coord.getLat(), radius, radiusUnit);
 
              // END Challenge #5
 
@@ -83,6 +81,13 @@ public class SiteGeoDaoRedisImpl implements SiteGeoDao {
              // START Challenge #5
 
              // TODO Add the code that populates the scores HashMap.
+             Map<Long, Response<Double>> scores = new HashMap<>(sites.size());
+             final Pipeline pipeline = jedis.pipelined();
+             for (Site site : sites) {
+                 final Response<Double> zscore = pipeline.zscore(RedisSchema.getCapacityRankingKey(), String.valueOf(site.getId()));
+                 scores.put(site.getId(), zscore);
+             }
+             pipeline.sync();
 
              // END Challenge #5
 
@@ -94,7 +99,7 @@ public class SiteGeoDaoRedisImpl implements SiteGeoDao {
          }
 
          return results;
-    } */
+    }
 
     private Set<Site> findSitesByGeo(GeoQuery query) {
         Coordinate coord = query.getCoordinate();
