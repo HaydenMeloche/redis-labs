@@ -21,6 +21,12 @@ public class FeedDaoRedisImpl implements FeedDao {
     // Challenge #6
     @Override
     public void insert(MeterReading meterReading) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            final Pipeline pipeline = jedis.pipelined();
+            pipeline.xadd(RedisSchema.getGlobalFeedKey(), StreamEntryID.NEW_ENTRY, meterReading.toMap(), globalMaxFeedLength, true);
+            pipeline.xadd(RedisSchema.getFeedKey(meterReading.getSiteId()), StreamEntryID.NEW_ENTRY, meterReading.toMap(), siteMaxFeedLength, true);
+            pipeline.sync();
+        }
     }
 
     @Override
