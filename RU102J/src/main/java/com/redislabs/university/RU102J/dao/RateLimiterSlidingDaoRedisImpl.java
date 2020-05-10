@@ -25,6 +25,21 @@ public class RateLimiterSlidingDaoRedisImpl implements RateLimiter {
     @Override
     public void hit(String name) throws RateLimitExceededException {
         // START CHALLENGE #7
+        try (Jedis jedis = jedisPool.getResource()) {
+            String key = KeyHelper.getKey("limiter:" + windowSizeMS + ":" + name + ":" + maxHits);
+            long now = ZonedDateTime.now().toInstant().toEpochMilli();
+
+            Transaction transaction = jedis.multi();
+            String member = now + "-" + Math.random();
+            transaction.zadd(key, now, member);
+            transaction.zremrangeByScore(key, 0, now - windowSizeMS);
+            Response<Long> hits = transaction.zcard(key);
+            transaction.exec();
+
+            if (hits.get() > maxHits) {
+                throw new RateLimitExceededException();
+            }
+        }
         // END CHALLENGE #7
     }
 }
