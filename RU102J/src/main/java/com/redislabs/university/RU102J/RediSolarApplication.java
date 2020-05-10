@@ -58,8 +58,8 @@ public class RediSolarApplication extends Application<RediSolarConfiguration> {
 
         MeterReadingResource meterResource =
                 new MeterReadingResource(new SiteStatsDaoRedisImpl(jedisPool),
-                        new MetricDaoRedisZsetImpl(jedisPool),
-                        // For RedisTimeSeries: new MetricDaoRedisTSImpl(jedisPool),
+//                        new MetricDaoRedisZsetImpl(jedisPool),
+                        new MetricDaoRedisTSImpl(jedisPool),
                         new CapacityDaoRedisImpl(jedisPool),
                         new FeedDaoRedisImpl(jedisPool));
         environment.jersey().register(meterResource);
