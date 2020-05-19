@@ -16,7 +16,6 @@ $ mvn package
 Running the Test Suite
 ```
 $ mvn test
-
 ```
 Running an individual test case:
 ```
