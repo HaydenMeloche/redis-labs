@@ -1,29 +1,35 @@
-# redisolar
+# Redis Solar application - Redis for Java Developers
 
-How to start the redisolar application
----
+This is a sample application that was used as a playground for implementing various challenges throughout the RU102J course. Each challenge was completed in a individual commit. 
 
-1. Run `mvn package` to build your application
-2. Start application with `java -jar target/redisolar-1.0.jar server config.yml`
-3. To check that your application is running enter url `http://[HOST]:8081`. If you're
-running on localhost, HOST will be "localhost".
+### Setup
 
-Tests
----
-
-To run all tests:
+#### Docker
+Setup Redis (with Time series through docker)
+```
+docker run -p 6379:6379 -it --rm redislabs/redistimeseries
+```
+#### Building the Project
+```
+$ mvn package
+```
+Running the Test Suite
+```
+$ mvn test
 
 ```
-mvn test
+Running an individual test case:
 ```
-
-To run a specific test:
-
+$ mvn test -Dtest=HelloTest
 ```
-mvn test -Dtest=JedisBasicsTest
+#### Loading the Sample Data
+The sample application includes a data loader. You should run this after completing each programming challenge. Often, you'll be writing code that inserts data into the application. Running the data loader will ensure that this data is always up to date.
 ```
-
-Health Check
----
-
-To see your applications health enter url `http://localhost:8084/healthcheck`
+$ java -jar target/redisolar-1.0.jar load
+```
+Running the Sample Application
+You'll also want to be able to run the sample application. From the command line, run the following:
+```
+$ java -jar target/redisolar-1.0.jar server config.yml
+```
+Now, you can then navigate to http://localhost:8081 to see the app.
