@@ -23,12 +23,12 @@ Running an individual test case:
 $ mvn test -Dtest=HelloTest
 ```
 #### Loading the Sample Data
-The sample application includes a data loader. You should run this after completing each programming challenge. Often, you'll be writing code that inserts data into the application. Running the data loader will ensure that this data is always up to date.
+Run the following command to load fake data into redis.
 ```
 $ java -jar target/redisolar-1.0.jar load
 ```
-Running the Sample Application
-You'll also want to be able to run the sample application. From the command line, run the following:
+### Running the application
+To run the application from the command line, run the following:
 ```
 $ java -jar target/redisolar-1.0.jar server config.yml
 ```
